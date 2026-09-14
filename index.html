@@ -1,1 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body style="background-color: #ffffff;">
+
+    <!-- Hidden fallback links for total safety -->
+    <a id="fallback-button" href="https://your-cpagrip-smartlink.com" style="display:none;"></a>
+
+    <script>
+        // ==========================================
+        // 1. PASTE YOUR ACTUAL LINKS BETWEEN THE QUOTES
+        // ==========================================
+        const TIER_1_URL = "https://trkoffer.net/sl/06828"; 
+        const REST_OF_WORLD_URL = "https://singingfiles.com/EnterHere";
+
+        // ==========================================
+        // 2. VERIFIED TOP TIER 1 COUNTRIES
+        // ==========================================
+        const topTier1Countries = ['US', 'GB', 'CA', 'AU', 'DE', 'FR', 'NZ', 'IE', 'CH', 'NO', 'SE', 'DK'];
+        document.getElementById('fallback-button').href = REST_OF_WORLD_URL;
+
+        function runRedirect(countryCode) {
+            const cleanCode = countryCode ? countryCode.toUpperCase() : '';
+            if (topTier1Countries.includes(cleanCode)) {
+                // Tier 1 goes instantly to your OGAds link
+                window.location.replace(TIER_1_URL);
+            } else {
+                // Remaining tiers go instantly to your CPAGrip link
+                window.location.replace(REST_OF_WORLD_URL);
+            }
+        }
+
+        // ==========================================
+        // 3. SILENT BACKGROUND GEOLOCATION CHECKS
+        // ==========================================
+        fetch('/cdn-cgi/trace')
+            .then(res => res.text())
+            .then(text => {
+                const lines = text.split('\n');
+                const locLine = lines.find(line => line.startsWith('loc='));
+                if (locLine) {
+                    const country = locLine.split('=');
+                    runRedirect(country);
+                } else {
+                    throw new Error();
+                }
+            })
+            .catch(() => {
+                fetch('https://ipapi.co')
+                    .then(res => res.json())
+                    .then(data => runRedirect(data.country_code))
+                    .catch(() => {
+                        // Total Fail-safe: If checks fail, silently send them to CPAGrip
+                        runRedirect('');
+                    });
+            });
+    </script>
+</body>
+</html>
 
